@@ -83,7 +83,7 @@ typealias ViewBindingInflater<BindingT> = (LayoutInflater, ViewGroup?, Boolean) 
  * If the view does not need to be initialized, the [bind] function can be used instead.
  */
 @WorkflowUiExperimentalApi
-interface LayoutRunner<RenderingT : Any> {
+fun interface LayoutRunner<RenderingT : Any> {
   fun showRendering(
     rendering: RenderingT,
     viewEnvironment: ViewEnvironment
@@ -141,11 +141,8 @@ interface LayoutRunner<RenderingT : Any> {
       noinline bindingInflater: ViewBindingInflater<BindingT>,
       crossinline showRendering: BindingT.(RenderingT, ViewEnvironment) -> Unit
     ): ViewFactory<RenderingT> = bind(bindingInflater) { binding ->
-      object : LayoutRunner<RenderingT> {
-        override fun showRendering(
-          rendering: RenderingT,
-          viewEnvironment: ViewEnvironment
-        ) = binding.showRendering(rendering, viewEnvironment)
+      LayoutRunner { rendering, viewEnvironment ->
+        binding.showRendering(rendering, viewEnvironment)
       }
     }
 
